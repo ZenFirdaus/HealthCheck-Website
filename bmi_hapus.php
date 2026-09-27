@@ -1,19 +1,19 @@
 <?php
-session_start();
-include 'koneksi.php';
-include 'login_cek.php';
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/login_cek.php';
+require_once __DIR__ . '/role.php';
 
-if ($_SESSION['job'] !== 'admin') {
-    header("location:index.php");
+if (!is_admin()) {
+    header("Location: index.php");
     exit;
 }
 
-$id_bmi = $_GET['id_bmi'];
+$id_bmi = (int)($_GET['id_bmi'] ?? $_GET['id'] ?? 0);
 
-$query = "DELETE FROM cek_bmi WHERE id_bmi = $id_bmi";
-if (mysqli_query($conn, $query)) {
-    header("Location: admin.php?pesan=berhasil_hapus");
-} else {
-    echo "Gagal menghapus data.";
+if ($id_bmi > 0) {
+    $stmt = $pdo->prepare("DELETE FROM cek_bmi WHERE id_bmi = ?");
+    $stmt->execute([$id_bmi]);
 }
-?>
+
+header("Location: admin.php?pesan=berhasil_hapus");
+exit;

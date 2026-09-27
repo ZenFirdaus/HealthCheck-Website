@@ -1,45 +1,46 @@
 <?php
-session_start();
-include 'koneksi.php';
-include 'login_cek.php';
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/login_cek.php';
+require_once __DIR__ . '/role.php';
 
-if ($_SESSION['job'] !== 'admin') {
-    header("location:index.php");
+if (!is_admin()) {
+    header("Location: index.php");
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_bmi = $_POST['id_bmi'];
-    $nama = $_POST['nama_user'];
-    $umur = (int)$_POST['umur'];
-    $berat = (float)$_POST['berat_badan'];
-    $tinggi = (float)$_POST['tinggi_badan'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id_bmi = (int)($_POST['id_bmi'] ?? 0);
+    $nama = trim($_POST['nama_user'] ?? '');
+    $umur = filter_var($_POST['umur'] ?? 0, FILTER_VALIDATE_INT);
+    $berat = filter_var($_POST['berat_badan'] ?? 0, FILTER_VALIDATE_FLOAT);
+    $tinggi = filter_var($_POST['tinggi_badan'] ?? 0, FILTER_VALIDATE_FLOAT);
 
-    if ($umur <= 0 || $berat <= 0 || $tinggi <= 0) {
-        echo "Input tidak valid.";
+    if ($id_bmi <= 0 || empty($nama) || !$umur || !$berat || !$tinggi || $berat <= 0 || $tinggi <= 0) {
+        header("Location: admin.php?pesan=invalid_input");
         exit;
     }
 
     $tinggi_m = $tinggi / 100;
-    $bmi = $berat / ($tinggi_m * $tinggi_m);
-    $bmi = round($bmi, 1);
+    $bmi = round($berat / ($tinggi_m * $tinggi_m), 1);
 
     if ($bmi < 18.5) {
-        $kondisi = "Kurus";
-    } elseif ($bmi < 25) {
-        $kondisi = "Normal";
-    } elseif ($bmi < 30) {
-        $kondisi = "Gemuk";
+        $kondisi = "Kurus (Kekurangan Berat Badan)";
+    } elseif ($bmi <= 22.9) {
+        $kondisi = "Normal (Berat Badan Ideal)";
+    } elseif ($bmi <= 24.9) {
+        $kondisi = "Kelebihan Berat Badan (Overweight)";
+    } elseif ($bmi <= 29.9) {
+        $kondisi = "Obesitas Tingkat 1";
     } else {
-        $kondisi = "Obesitas";
+        $kondisi = "Obesitas Tingkat 2 (Tinggi)";
     }
 
-    $query = "UPDATE cek_bmi SET nama_user='$nama', umur='$umur', berat_badan='$berat', tinggi_badan='$tinggi', kondisi='$kondisi' WHERE id_bmi=$id_bmi";
+    $stmt = $pdo->prepare("UPDATE cek_bmi SET nama_user = ?, umur = ?, berat_badan = ?, tinggi_badan = ?, bmi = ?, kondisi = ? WHERE id_bmi = ?");
+    $stmt->execute([$nama, $umur, $berat, $tinggi, $bmi, $kondisi, $id_bmi]);
 
-    if (mysqli_query($conn, $query)) {
-        header("Location: admin.php?pesan=berhasil_update");
-    } else {
-        echo "Gagal update data.";
-    }
+    header("Location: admin.php?pesan=berhasil_update");
+    exit;
+} else {
+    header("Location: admin.php");
+    exit;
 }
-?>
