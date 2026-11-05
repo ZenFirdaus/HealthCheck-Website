@@ -1,62 +1,57 @@
 </main>
 
-<footer class="py-5 mt-auto">
+<footer class="mt-auto">
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-5">
                 <div class="d-flex align-items-center mb-3">
-                    <span class="brand-badge" style="width:32px; height:32px; font-size: 0.9rem;"><i class="bi bi-heart-pulse-fill"></i></span>
+                    <span class="brand-badge" style="width:32px; height:32px; font-size: 0.9rem;"><i class="bi bi-activity"></i></span>
                     <span class="brand-text fs-5">Health<span>Check</span></span>
                 </div>
-                <p class="text-secondary small mb-3">
-                    Platform alat kesehatan digital mandiri yang dirancang untuk membantu Anda memantau kebugaran, indeks massa tubuh, kalori harian, target detak jantung, dan kesehatan emosional dengan mudah, aman, dan informatif.
+                <p class="small mb-3" style="color: var(--muted); line-height: 1.6;">
+                    Platform kesehatan mandiri modern berbasis data biometrik terstandar. Didesain untuk memberikan evaluasi awal kondisi fisik, kebutuhan nutrisi, dan kesejahteraan emosional secara objektif dan mudah dipahami.
                 </p>
-                <div class="disclaimer-box m-0 p-3">
-                    <div class="d-flex align-items-start gap-2">
-                        <i class="bi bi-exclamation-triangle-fill fs-5 mt-1 text-warning"></i>
-                        <div>
-                            <strong class="d-block text-dark">Disclaimer Medis Penting:</strong>
-                            <small class="text-muted">
-                                Hasil perhitungan dan evaluasi pada website ini semata-mata bersifat informatif dan edukatif berdasarkan parameter yang Anda masukkan. Hasil ini bukan pengganti saran, diagnosis, maupun perawatan medis profesional dari dokter atau tenaga kesehatan.
-                            </small>
-                        </div>
-                    </div>
+                <div class="disclaimer-box m-0">
+                    <strong class="d-block" style="color: var(--primary);">Catatan Medis Penting</strong>
+                    <span class="small" style="color: var(--muted); display: block; line-height: 1.5;">
+                        Seluruh kalkulasi bersifat edukatif dan estimatif berdasarkan parameter yang Anda isi. Layanan ini bukan pengganti diagnosis medis formal, resep dokter, maupun konsultasi spesialis kesehatan.
+                    </span>
                 </div>
             </div>
 
             <div class="col-6 col-lg-3 offset-lg-1">
-                <h6 class="text-dark fw-bold mb-3">Alat Kesehatan</h6>
-                <ul class="list-unstyled small d-flex flex-column gap-2">
-                    <li><a href="bmi_form.php">Kalkulator BMI (IMT)</a></li>
-                    <li><a href="bmr_form.php">Kalkulator BMR & Kalori (TDEE)</a></li>
-                    <li><a href="jantung_form.php">Kalkulator Detak Jantung</a></li>
-                    <li><a href="mental_form.php">Screening Mental Mandiri</a></li>
+                <h6>Kalkulator Kesehatan</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mt-3">
+                    <li><a href="<?= $relPath ?>bmi/bmi_form.php">Indeks Massa Tubuh (BMI)</a></li>
+                    <li><a href="<?= $relPath ?>bmr/bmr_form.php">Kebutuhan Kalori & BMR</a></li>
+                    <li><a href="<?= $relPath ?>jantung/jantung_form.php">Detak Jantung & Zona Kardio</a></li>
+                    <li><a href="<?= $relPath ?>mental/mental_form.php">Skrining Mental (PHQ-4)</a></li>
                 </ul>
             </div>
 
             <div class="col-6 col-lg-3">
-                <h6 class="text-dark fw-bold mb-3">Akses Akun</h6>
-                <ul class="list-unstyled small d-flex flex-column gap-2">
+                <h6>Navigasi Akun</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mt-3">
                     <?php if (isset($_SESSION['username'])): ?>
-                        <li><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Login sebagai <?= htmlspecialchars($_SESSION['username']) ?></span></li>
+                        <li><span class="fw-semibold" style="color: var(--success);"><i class="bi bi-person me-1"></i><?= htmlspecialchars($_SESSION['username']) ?></span></li>
                         <?php if (isset($_SESSION['job']) && $_SESSION['job'] === 'admin'): ?>
-                            <li><a href="admin.php">Admin Dashboard</a></li>
+                            <li><a href="<?= $relPath ?>admin/admin.php">Admin Dashboard</a></li>
                         <?php endif; ?>
-                        <li><a href="logout.php" class="text-danger">Keluar (Logout)</a></li>
+                        <li><a href="<?= $relPath ?>auth/logout.php" style="color: var(--danger);">Keluar</a></li>
                     <?php else: ?>
-                        <li><a href="login.php">Masuk Pengguna</a></li>
-                        <li><a href="register.php">Daftar Akun Baru</a></li>
-                        <li><a href="login_admin.php">Masuk Administrator</a></li>
+                        <li><a href="<?= $relPath ?>auth/login.php">Masuk Akun</a></li>
+                        <li><a href="<?= $relPath ?>auth/register.php">Daftar Akun Baru</a></li>
+                        <li><a href="<?= $relPath ?>auth/login_admin.php">Portal Administrator</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
         </div>
 
-        <hr class="border-secondary-subtle my-4">
+        <hr style="border-color: var(--card-border); margin: 2rem 0 1.5rem;">
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-muted">
-            <p class="mb-0">&copy; <?= date('Y') ?> HealthCheck. Simple code, clean structure, professional result.</p>
-            <p class="mb-0">Dibuat untuk kesadaran gaya hidup sehat yang berkelanjutan.</p>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small" style="color: var(--muted);">
+            <p class="mb-0">&copy; <?= date('Y') ?> HealthCheck. Seluruh hak cipta dilindungi.</p>
+            <p class="mb-0">Informasi kesehatan edukatif berbasis parameter standar.</p>
         </div>
     </div>
 </footer>

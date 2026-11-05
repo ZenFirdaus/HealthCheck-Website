@@ -1,29 +1,26 @@
 <?php
-$pageTitle = 'HealthCheck — Pahami Kesehatanmu, Mulai dari Sini';
+$pageTitle = 'HealthCheck — Kalkulator & Skrining Kesehatan Mandiri';
 $activePage = 'home';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Hero Section -->
-<section class="py-5" style="background: linear-gradient(180deg, #f0fdfa 0%, #f8fafc 100%); border-bottom: 1px solid #e2e8f0;">
-    <div class="container text-center py-4">
-        <span class="badge bg-white text-teal border border-success-subtle px-3 py-2 rounded-pill fw-semibold mb-3 shadow-sm">
-            <i class="bi bi-shield-check text-success me-1"></i> Alat Pemeriksaan Mandiri Digital
-        </span>
-        <h1 class="display-5 fw-bold text-dark mb-3">
-            Pahami Kesehatanmu, <span class="text-teal" style="color: #0d9488;">Mulai dari Sini.</span>
+<section class="py-5" style="background-color: var(--surface); border-bottom: 1px solid var(--card-border);">
+    <div class="container text-center py-3">
+        <h1 class="hero-heading mb-2">
+            Kalkulator & Skrining Kesehatan Mandiri
         </h1>
-        <p class="lead text-secondary mx-auto mb-4" style="max-width: 680px; font-size: 1.15rem;">
-            Gunakan alat kesehatan sederhana untuk mendapatkan informasi awal berbasis parameter tubuh Anda dengan praktis, aman, dan mudah dipahami.
+        <p class="lead-editorial mx-auto mb-4" style="max-width: 620px;">
+            Alat evaluasi mandiri berbasis parameter klinis standar untuk memantau komposisi tubuh, laju metabolisme, rentang denyut nadi, dan kesejahteraan emosional Anda.
         </p>
         
         <!-- Search Tool Box -->
-        <div class="mx-auto" style="max-width: 540px;">
-            <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden border">
-                <span class="input-group-text bg-white border-0 ps-3">
-                    <i class="bi bi-search text-muted"></i>
+        <div class="mx-auto" style="max-width: 480px;">
+            <div class="input-group overflow-hidden" style="border: 1px solid var(--card-border); border-radius: var(--radius-md); background-color: var(--surface);">
+                <span class="input-group-text bg-transparent border-0 ps-3">
+                    <i class="bi bi-search" style="color: var(--muted);"></i>
                 </span>
-                <input type="text" id="toolSearch" class="form-control border-0 ps-2" placeholder="Cari alat kesehatan (misal: BMI, Kalori, Jantung...)" onkeyup="filterTools()">
+                <input type="text" id="toolSearch" class="form-control border-0 ps-2" placeholder="Cari alat (BMI, Kalori, Jantung, Mental...)" onkeyup="filterTools()">
             </div>
         </div>
     </div>
@@ -34,11 +31,11 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
         
         <!-- Category Filter Tabs -->
-        <div class="d-flex flex-wrap justify-content-center gap-2 mb-5" id="categoryButtons">
-            <button class="btn btn-primary-health btn-sm rounded-pill px-4 cat-btn active" onclick="filterCategory('all', this)">Semua Alat</button>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 cat-btn" onclick="filterCategory('gizi', this)">Gizi & Berat Badan</button>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 cat-btn" onclick="filterCategory('kardio', this)">Jantung & Kardiovaskular</button>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 cat-btn" onclick="filterCategory('mental', this)">Kesehatan Mental</button>
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4" id="categoryButtons">
+            <button class="btn btn-primary-health btn-sm cat-btn active" onclick="filterCategory('all', this)">Semua Alat</button>
+            <button class="btn btn-outline-secondary btn-sm cat-btn" onclick="filterCategory('gizi', this)">Gizi & Berat Badan</button>
+            <button class="btn btn-outline-secondary btn-sm cat-btn" onclick="filterCategory('kardio', this)">Jantung & Kardiovaskular</button>
+            <button class="btn btn-outline-secondary btn-sm cat-btn" onclick="filterCategory('mental', this)">Kesehatan Mental</button>
         </div>
 
         <!-- Grid Tools -->
@@ -46,68 +43,76 @@ require_once __DIR__ . '/includes/header.php';
             
             <!-- Tool 1: BMI -->
             <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator bmi indeks massa tubuh berat badan ideal kurus normal gemuk obesitas">
-                <div class="card card-tool p-4">
-                    <div class="tool-icon icon-teal">
-                        <i class="bi bi-speedometer2"></i>
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                        <span class="category-badge">Gizi & Tubuh</span>
                     </div>
-                    <span class="category-badge text-teal bg-teal-subtle align-self-start mb-2" style="background:#ccfbf1; color:#0f766e;">Gizi & Tubuh</span>
-                    <h5 class="fw-bold mb-2 text-dark">Kalkulator BMI</h5>
-                    <p class="text-secondary small mb-4 flex-grow-1">
-                        Hitung Indeks Massa Tubuh (IMT) untuk mengetahui apakah proporsi berat badan Anda tergolong kurus, ideal, atau berlebih.
+                    <h5 class="fw-bold mb-2 text-dark">Indeks Massa Tubuh (BMI)</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
+                        Hitung perbandingan berat dan tinggi badan untuk mengetahui apakah proporsi tubuh Anda tergolong kurus, ideal, atau berlebih.
                     </p>
-                    <a href="bmi_form.php" class="btn btn-outline-health w-100 mt-auto">
-                        Cek Sekarang <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="bmi/bmi_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Hitung BMI
                     </a>
                 </div>
             </div>
 
             <!-- Tool 2: BMR & Kebutuhan Kalori -->
             <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator bmr kalori harian basal metabolic rate tdee makanan diet energi">
-                <div class="card card-tool p-4">
-                    <div class="tool-icon icon-blue">
-                        <i class="bi bi-fire"></i>
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-fire"></i>
+                        </div>
+                        <span class="category-badge">Energi & Metabolisme</span>
                     </div>
-                    <span class="category-badge text-primary bg-primary-subtle align-self-start mb-2">Energi & Metabolisme</span>
-                    <h5 class="fw-bold mb-2 text-dark">Kalkulator BMR & Kalori</h5>
-                    <p class="text-secondary small mb-4 flex-grow-1">
-                        Ketahui laju metabolisme basal dan estimasi kalori harian (TDEE) sesuai tingkatan aktivitas fisik harian Anda.
+                    <h5 class="fw-bold mb-2 text-dark">Kebutuhan Kalori & BMR</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
+                        Estimasi laju metabolisme basal dan kebutuhan kalori harian (TDEE) berdasarkan tingkat aktivitas fisik Anda.
                     </p>
-                    <a href="bmr_form.php" class="btn btn-outline-health w-100 mt-auto">
-                        Hitung Kalori <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="bmr/bmr_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Hitung Kalori
                     </a>
                 </div>
             </div>
 
             <!-- Tool 3: Kalkulator Detak Jantung -->
             <div class="col-md-6 col-lg-3 tool-item" data-category="kardio" data-title="detak jantung nadi bpm denyut heart rate zona latihan kardio">
-                <div class="card card-tool p-4">
-                    <div class="tool-icon icon-rose">
-                        <i class="bi bi-heart-pulse"></i>
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                        <span class="category-badge">Kardiovaskular</span>
                     </div>
-                    <span class="category-badge text-danger bg-danger-subtle align-self-start mb-2">Kardiovaskular</span>
-                    <h5 class="fw-bold mb-2 text-dark">Detak Jantung & Zona</h5>
-                    <p class="text-secondary small mb-4 flex-grow-1">
-                        Estimasi detak jantung istirahat (RHR), denyut maksimum, serta rentang target detak jantung optimal saat berolahraga.
+                    <h5 class="fw-bold mb-2 text-dark">Detak Jantung & Zona Kardio</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
+                        Estimasi detak jantung istirahat (RHR), denyut maksimum, serta rentang target denyut jantung optimal saat berolahraga.
                     </p>
-                    <a href="jantung_form.php" class="btn btn-outline-health w-100 mt-auto">
-                        Cek Denyut Nadi <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="jantung/jantung_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Cek Detak Jantung
                     </a>
                 </div>
             </div>
 
             <!-- Tool 4: Mental Health PHQ-4 -->
             <div class="col-md-6 col-lg-3 tool-item" data-category="mental" data-title="kesehatan mental stres kecemasan cemas depresi suasana hati mood phq-4 self assessment">
-                <div class="card card-tool p-4">
-                    <div class="tool-icon icon-purple">
-                        <i class="bi bi-emoji-smile"></i>
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-chat-heart"></i>
+                        </div>
+                        <span class="category-badge">Kesehatan Mental</span>
                     </div>
-                    <span class="category-badge text-purple bg-purple-subtle align-self-start mb-2" style="background:#f3e8ff; color:#7e22ce;">Kesehatan Mental</span>
-                    <h5 class="fw-bold mb-2 text-dark">Screening Mental Mandiri</h5>
-                    <p class="text-secondary small mb-4 flex-grow-1">
+                    <h5 class="fw-bold mb-2 text-dark">Skrining Mental (PHQ-4)</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
                         Kuesioner penapisan singkat (PHQ-4 terstandar) untuk mengevaluasi tingkat kecemasan dan suasana hati Anda 2 minggu terakhir.
                     </p>
-                    <a href="mental_form.php" class="btn btn-outline-health w-100 mt-auto">
-                        Mulai Screening <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="mental/mental_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Mulai Skrining
                     </a>
                 </div>
             </div>
@@ -116,64 +121,48 @@ require_once __DIR__ . '/includes/header.php';
 
         <!-- Empty Search State -->
         <div id="noToolMatch" class="text-center py-5 d-none">
-            <div class="p-4 bg-white rounded-4 border d-inline-block shadow-sm">
-                <i class="bi bi-search text-muted fs-1 mb-2 d-block"></i>
-                <h5 class="fw-bold text-dark">Alat Tidak Ditemukan</h5>
-                <p class="text-secondary small mb-0">Coba gunakan kata kunci lain seperti BMI, kalori, denyut, atau mental.</p>
+            <div class="p-4 bg-white border d-inline-block" style="border-radius: var(--radius-md);">
+                <i class="bi bi-search fs-3 mb-2 d-block" style="color: var(--muted);"></i>
+                <h6 class="fw-bold text-dark mb-1">Alat Tidak Ditemukan</h6>
+                <p class="small mb-0" style="color: var(--muted);">Coba gunakan kata kunci lain seperti BMI, kalori, denyut, atau mental.</p>
             </div>
         </div>
 
     </div>
 </section>
 
-<!-- Mengapa HealthCheck Section -->
+<!-- Informasi Metodologi & Batasan Klinis -->
 <section class="py-5 bg-white border-top border-bottom">
-    <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6">
-                <span class="badge bg-light text-teal border border-teal-subtle px-3 py-2 rounded-pill fw-semibold mb-3">Tentang Platform</span>
-                <h2 class="fw-bold text-dark mb-3">Solusi Digital Cek Mandiri yang Sederhana & Transparan</h2>
-                <p class="text-secondary mb-4">
-                    HealthCheck dirancang dengan rumus-rumus ilmiah tervalidasi (WHO BMI standards, Mifflin-St Jeor equation, Gellish HR formula, PHQ-4 Screening) tanpa istilah medis yang membingungkan.
-                </p>
-                <div class="d-flex flex-column gap-3">
-                    <div class="d-flex gap-3 align-items-start">
-                        <div class="bg-success-subtle text-success rounded-circle p-2 px-3 fw-bold"><i class="bi bi-check2"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1 text-dark">Akses Cepat & Gratis</h6>
-                            <p class="text-secondary small mb-0">Anda dapat langsung menggunakan semua kalkulator tanpa harus repot registrasi jika hanya butuh hasil cepat.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-3 align-items-start">
-                        <div class="bg-success-subtle text-success rounded-circle p-2 px-3 fw-bold"><i class="bi bi-shield-check"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1 text-dark">Privasi Terjaga</h6>
-                            <p class="text-secondary small mb-0">Data Anda tidak diekspos maupun diperjualbelikan kepada pihak ketiga manapun.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-3 align-items-start">
-                        <div class="bg-success-subtle text-success rounded-circle p-2 px-3 fw-bold"><i class="bi bi-book"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1 text-dark">Edukasi & Konteks Jelas</h6>
-                            <p class="text-secondary small mb-0">Setiap hasil dilengkapi interpretasi mudah dipahami serta rambu kapan harus berkonsultasi ke dokter.</p>
-                        </div>
-                    </div>
+    <div class="container py-2">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="pe-lg-3">
+                    <span class="eyebrow-text">Prinsip Platform</span>
+                    <h3 class="section-heading mb-3">Informasi Klinis yang Terukur dan Transparan</h3>
+                    <p class="small" style="color: var(--muted); line-height: 1.65;">
+                        HealthCheck dibangun untuk menyediakan kalkulator kesehatan mandiri yang jelas sumber rumusnya, tanpa janji medis berlebihan, dan menghormati privasi data pengguna secara penuh.
+                    </p>
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="p-4 p-md-5 rounded-4 border bg-light shadow-sm">
-                    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Panduan Penggunaan yang Bijak</h5>
-                    <p class="text-secondary small mb-3">
-                        Kalkulator kesehatan merupakan alat skrining awal dan estimasi numerik. Ingatlah bahwa:
-                    </p>
-                    <ul class="text-secondary small mb-4 d-flex flex-column gap-2 ps-3">
-                        <li>BMI tidak membedakan massa lemak dari massa otot (misalnya pada atlet).</li>
-                        <li>Kalori harian adalah estimasi teoretis, metabolisme setiap individu dapat bervariasi.</li>
-                        <li>Detak jantung dapat dipengaruhi kafein, dehidrasi, stres, dan konsumsi obat.</li>
-                        <li>Screening mental bukan vonis klinis, melainkan cermin refleksi untuk mencari pertolongan yang tepat.</li>
+            <div class="col-lg-4">
+                <div class="p-4 h-100 border rounded-3" style="border-color: var(--card-border) !important; background-color: var(--light-bg);">
+                    <h6 class="fw-bold mb-2" style="color: var(--primary);">Standar & Formula Acuan</h6>
+                    <ul class="list-unstyled small mb-0 d-flex flex-column gap-2" style="color: var(--muted); line-height: 1.55;">
+                        <li><strong>BMI:</strong> Standar klasifikasi berat badan WHO untuk populasi Asia.</li>
+                        <li><strong>BMR / TDEE:</strong> Formula Mifflin-St Jeor yang tervalidasi secara klinis.</li>
+                        <li><strong>Denyut Maksimal:</strong> Formula Gellish untuk batas denyut nadi latihan.</li>
+                        <li><strong>Kesehatan Mental:</strong> Instrumen penapisan PHQ-4 (Kroenke et al., 2009).</li>
                     </ul>
-                    <a href="bmi_form.php" class="btn btn-primary-health btn-sm px-4">Mulai Cek Sekarang</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="p-4 h-100 border rounded-3" style="border-color: var(--card-border) !important; background-color: var(--light-bg);">
+                    <h6 class="fw-bold mb-2" style="color: var(--primary);">Batasan Penggunaan</h6>
+                    <p class="small mb-0" style="color: var(--muted); line-height: 1.6;">
+                        Seluruh hasil perhitungan bersifat edukatif dan estimatif awal. Angka-angka ini bukan pengganti diagnosis medis, evaluasi laboratorium, maupun rencana perawatan dari dokter spesialis.
+                    </p>
                 </div>
             </div>
         </div>

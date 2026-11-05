@@ -1,5 +1,2 @@
 <?php
-session_start();
-session_destroy();
-header("location:index.php?pesan=logout");
-?>
+require_once __DIR__ . "/auth/logout.php";
