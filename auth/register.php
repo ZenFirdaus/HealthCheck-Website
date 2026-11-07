@@ -5,6 +5,7 @@ require_once __DIR__ . '/../includes/db.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $konfirmasi = $_POST['konfirmasi_password'] ?? '';
@@ -24,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->fetchColumn() > 0) {
             $error = "Username sudah digunakan, silakan pilih username lain.";
         } else {
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $stmtInsert = $pdo->prepare("INSERT INTO user (username, password, role) VALUES (?, ?, 'user')");
             if ($stmtInsert->execute([$username, $hashedPassword])) {
                 header("Location: login.php?pesan=Silahkan_login");
@@ -56,6 +57,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php endif; ?>
 
                     <form action="register.php" method="POST">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
                             <input type="text" name="username" id="username" class="form-control" placeholder="3 - 30 karakter" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required autofocus>

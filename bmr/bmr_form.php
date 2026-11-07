@@ -1,9 +1,18 @@
 <?php
 $pageTitle = 'Kalkulator BMR & Kebutuhan Kalori (TDEE) — HealthCheck';
 $activePage = 'bmr';
+require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
+require_once __DIR__ . '/../includes/bmr_helper.php';
 
-$defaultName = $_SESSION['username'] ?? '';
+$profile = get_current_user_profile($pdo);
+$defaultName = $profile['nama_lengkap'] ?? ($_SESSION['username'] ?? '');
+$defaultJk = $profile['jenis_kelamin'] ?? 'L';
+$calcAge = !empty($profile['tanggal_lahir']) ? calculate_age_from_dob($profile['tanggal_lahir']) : null;
+$defaultUmur = ($calcAge !== null && $calcAge >= 10 && $calcAge <= 110) ? $calcAge : 25;
+$defaultBb = !empty($profile['berat_badan']) ? (float)$profile['berat_badan'] : '';
+$defaultTb = !empty($profile['tinggi_badan']) ? (float)$profile['tinggi_badan'] : '';
 ?>
 
 <div class="container py-4">
@@ -32,6 +41,7 @@ $defaultName = $_SESSION['username'] ?? '';
                     <?php endif; ?>
 
                     <form action="bmr_proses.php" method="POST" id="bmrForm" onsubmit="return validateBmrForm()">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label class="form-label" for="nama_user">Nama Lengkap <span class="text-danger">*</span></label>
                             <input type="text" name="nama_user" id="nama_user" class="form-control" placeholder="Contoh: Budi Santoso" value="<?= htmlspecialchars($defaultName) ?>" required>
@@ -41,13 +51,13 @@ $defaultName = $_SESSION['username'] ?? '';
                             <div class="col-md-6">
                                 <label class="form-label" for="jenis_kelamin">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <select name="jenis_kelamin" id="jenis_kelamin" class="form-select" required>
-                                    <option value="L">Laki-laki</option>
-                                    <option value="P">Perempuan</option>
+                                    <option value="L" <?= $defaultJk === 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                    <option value="P" <?= $defaultJk === 'P' ? 'selected' : '' ?>>Perempuan</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="umur">Umur (tahun) <span class="text-danger">*</span></label>
-                                <input type="number" name="umur" id="umur" class="form-control" placeholder="25" min="10" max="110" value="25" required>
+                                <input type="number" name="umur" id="umur" class="form-control" placeholder="25" min="10" max="110" value="<?= htmlspecialchars((string)$defaultUmur) ?>" required>
                                 <div class="form-text small">Rentang: 10 - 110 tahun</div>
                             </div>
                         </div>
@@ -56,27 +66,38 @@ $defaultName = $_SESSION['username'] ?? '';
                             <div class="col-md-6">
                                 <label class="form-label" for="berat_badan">Berat Badan (kg) <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.1" name="berat_badan" id="berat_badan" class="form-control" placeholder="65" min="20" max="300" required>
+                                    <input type="number" step="0.1" name="berat_badan" id="berat_badan" class="form-control" placeholder="65" min="20" max="300" value="<?= $defaultBb !== '' ? htmlspecialchars((string)$defaultBb) : '' ?>" required>
                                     <span class="input-group-text bg-light text-muted">kg</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="tinggi_badan">Tinggi Badan (cm) <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan" class="form-control" placeholder="170" min="80" max="250" required>
+                                    <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan" class="form-control" placeholder="170" min="80" max="250" value="<?= $defaultTb !== '' ? htmlspecialchars((string)$defaultTb) : '' ?>" required>
                                     <span class="input-group-text bg-light text-muted">cm</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label class="form-label" for="aktivitas">Tingkat Aktivitas Fisik Harian <span class="text-danger">*</span></label>
                             <select name="aktivitas" id="aktivitas" class="form-select" required>
-                                <option value="1.2">Jarang Bergerak / Sedentary (banyak duduk, tidak ada olahraga rutin)</option>
-                                <option value="1.375">Aktivitas Ringan (olahraga 1-3 hari/minggu)</option>
-                                <option value="1.55" selected>Aktivitas Sedang (olahraga 3-5 hari/minggu)</option>
-                                <option value="1.725">Sangat Aktif (olahraga berat 6-7 hari/minggu)</option>
-                                <option value="1.9">Ekstra Aktif (pekerja fisik berat / atlet latihan 2x sehari)</option>
+                                <?php foreach (get_bmr_activity_levels() as $k => $act): ?>
+                                    <option value="<?= $k ?>" <?= ($k === '1.55') ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($act['description']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="target_tujuan">Sasaran Berat Badan & Distribusi Nutrisi <span class="text-danger">*</span></label>
+                            <select name="target_tujuan" id="target_tujuan" class="form-select" required>
+                                <?php foreach (get_dietary_goals() as $gKey => $goal): ?>
+                                    <option value="<?= $gKey ?>" <?= ($gKey === 'maintain') ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($goal['label']) ?> — <?= htmlspecialchars($goal['description']) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 

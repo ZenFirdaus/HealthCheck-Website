@@ -61,7 +61,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <!-- Tool 2: BMR & Kebutuhan Kalori -->
-            <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator bmr kalori harian basal metabolic rate tdee makanan diet energi">
+            <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator bmr kalori harian basal metabolic rate tdee makanan diet energi makronutrisi protein karbohidrat lemak">
                 <div class="card card-tool">
                     <div class="card-tool-header">
                         <div class="tool-icon">
@@ -69,12 +69,69 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                         <span class="category-badge">Energi & Metabolisme</span>
                     </div>
-                    <h5 class="fw-bold mb-2 text-dark">Kebutuhan Kalori & BMR</h5>
+                    <h5 class="fw-bold mb-2 text-dark">Kalori & Makronutrisi</h5>
                     <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
-                        Estimasi laju metabolisme basal dan kebutuhan kalori harian (TDEE) berdasarkan tingkat aktivitas fisik Anda.
+                        Estimasi metabolisme basal (BMR), TDEE, dan kebutuhan gram protein, karbohidrat, serta lemak sesuai sasaran Anda.
                     </p>
                     <a href="bmr/bmr_form.php" class="btn btn-outline-health w-100 mt-auto">
                         Hitung Kalori
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tool 2B-1: WHtR -->
+            <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator whtr rasio lingkar pinggang tinggi badan perut buncit lemak viseral kardiometabolik">
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-rulers"></i>
+                        </div>
+                        <span class="category-badge">Komposisi Tubuh</span>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-dark">Rasio Pinggang-Tinggi (WHtR)</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
+                        Evaluasi penumpukan lemak perut viseral dan risiko kardiometabolik lebih sensitif daripada BMI murni.
+                    </p>
+                    <a href="whtr/whtr_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Hitung WHtR
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tool 2B-2: Body Fat US Navy -->
+            <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator lemak tubuh body fat percentage persen us navy antropometri leher pinggang pinggul massa otot">
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-person-lines-fill"></i>
+                        </div>
+                        <span class="category-badge">Komposisi Tubuh</span>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-dark">Persentase Lemak Tubuh</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
+                        Estimasi persentase lemak murni dan massa bebas lemak (lean mass) menggunakan metode terstandar US Navy.
+                    </p>
+                    <a href="body_fat/body_fat_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Cek Lemak Tubuh
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tool 2B-3: Daily Fluid Needs -->
+            <div class="col-md-6 col-lg-3 tool-item" data-category="gizi" data-title="kalkulator kebutuhan cairan air minum hidrasi dehidrasi liter mililiter gelas harian">
+                <div class="card card-tool">
+                    <div class="card-tool-header">
+                        <div class="tool-icon">
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                        <span class="category-badge">Hidrasi Sehat</span>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-dark">Kebutuhan Cairan Harian</h5>
+                    <p class="small mb-4 flex-grow-1" style="color: var(--muted); line-height: 1.55;">
+                        Estimasi target volume air minum harian yang disesuaikan dengan berat badan, durasi olahraga, dan suhu iklim.
+                    </p>
+                    <a href="cairan/cairan_form.php" class="btn btn-outline-health w-100 mt-auto">
+                        Hitung Cairan
                     </a>
                 </div>
             </div>

@@ -1,9 +1,17 @@
 <?php
 $pageTitle = 'Kalkulator BMI (Indeks Massa Tubuh) — HealthCheck';
 $activePage = 'bmi';
+require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
 
-$defaultName = $_SESSION['username'] ?? '';
+$profile = get_current_user_profile($pdo);
+$defaultName = $profile['nama_lengkap'] ?? ($_SESSION['username'] ?? '');
+$defaultJk = $profile['jenis_kelamin'] ?? 'L';
+$calcAge = !empty($profile['tanggal_lahir']) ? calculate_age_from_dob($profile['tanggal_lahir']) : null;
+$defaultUmur = ($calcAge !== null && $calcAge >= 5 && $calcAge <= 120) ? $calcAge : 25;
+$defaultBb = !empty($profile['berat_badan']) ? (float)$profile['berat_badan'] : '';
+$defaultTb = !empty($profile['tinggi_badan']) ? (float)$profile['tinggi_badan'] : '';
 ?>
 
 <div class="container py-4">
@@ -32,6 +40,7 @@ $defaultName = $_SESSION['username'] ?? '';
                     <?php endif; ?>
 
                     <form action="bmi_proses.php" method="POST" id="bmiForm" onsubmit="return validateBmiForm()">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label class="form-label" for="nama_user">Nama Lengkap <span class="text-danger">*</span></label>
                             <input type="text" name="nama_user" id="nama_user" class="form-control" placeholder="Contoh: Budi Santoso" value="<?= htmlspecialchars($defaultName) ?>" required>
@@ -41,13 +50,13 @@ $defaultName = $_SESSION['username'] ?? '';
                             <div class="col-md-6">
                                 <label class="form-label" for="jenis_kelamin">Jenis Kelamin</label>
                                 <select name="jenis_kelamin" id="jenis_kelamin" class="form-select">
-                                    <option value="L">Laki-laki</option>
-                                    <option value="P">Perempuan</option>
+                                    <option value="L" <?= $defaultJk === 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                    <option value="P" <?= $defaultJk === 'P' ? 'selected' : '' ?>>Perempuan</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="umur">Umur (tahun) <span class="text-danger">*</span></label>
-                                <input type="number" name="umur" id="umur" class="form-control" placeholder="25" min="5" max="120" value="25" required>
+                                <input type="number" name="umur" id="umur" class="form-control" placeholder="25" min="5" max="120" value="<?= htmlspecialchars((string)$defaultUmur) ?>" required>
                                 <div class="form-text small">Rentang: 5 - 120 tahun</div>
                             </div>
                         </div>
@@ -56,7 +65,7 @@ $defaultName = $_SESSION['username'] ?? '';
                             <div class="col-md-6">
                                 <label class="form-label" for="berat_badan">Berat Badan (kg) <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.1" name="berat_badan" id="berat_badan" class="form-control" placeholder="60.5" min="10" max="350" required>
+                                    <input type="number" step="0.1" name="berat_badan" id="berat_badan" class="form-control" placeholder="60.5" min="10" max="350" value="<?= $defaultBb !== '' ? htmlspecialchars((string)$defaultBb) : '' ?>" required>
                                     <span class="input-group-text">kg</span>
                                 </div>
                                 <div class="form-text small">Rentang: 10 - 350 kg</div>
@@ -64,7 +73,7 @@ $defaultName = $_SESSION['username'] ?? '';
                             <div class="col-md-6">
                                 <label class="form-label" for="tinggi_badan">Tinggi Badan (cm) <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan" class="form-control" placeholder="170" min="50" max="250" required>
+                                    <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan" class="form-control" placeholder="170" min="50" max="250" value="<?= $defaultTb !== '' ? htmlspecialchars((string)$defaultTb) : '' ?>" required>
                                     <span class="input-group-text">cm</span>
                                 </div>
                                 <div class="form-text small">Rentang: 50 - 250 cm</div>

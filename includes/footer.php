@@ -23,8 +23,11 @@
                 <h6>Kalkulator Kesehatan</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-2 mt-3">
                     <li><a href="<?= $relPath ?>bmi/bmi_form.php">Indeks Massa Tubuh (BMI)</a></li>
-                    <li><a href="<?= $relPath ?>bmr/bmr_form.php">Kebutuhan Kalori & BMR</a></li>
-                    <li><a href="<?= $relPath ?>jantung/jantung_form.php">Detak Jantung & Zona Kardio</a></li>
+                    <li><a href="<?= $relPath ?>bmr/bmr_form.php">Kalori & Makronutrisi (BMR/TDEE)</a></li>
+                    <li><a href="<?= $relPath ?>whtr/whtr_form.php">Rasio Pinggang-Tinggi (WHtR)</a></li>
+                    <li><a href="<?= $relPath ?>body_fat/body_fat_form.php">Lemak Tubuh (US Navy)</a></li>
+                    <li><a href="<?= $relPath ?>cairan/cairan_form.php">Kebutuhan Cairan Harian</a></li>
+                    <li><a href="<?= $relPath ?>jantung/jantung_form.php">Detak Jantung & Kardio</a></li>
                     <li><a href="<?= $relPath ?>mental/mental_form.php">Skrining Mental (PHQ-4)</a></li>
                 </ul>
             </div>

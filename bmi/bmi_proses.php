@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
     $nama = trim($_POST['nama_user'] ?? '');
     $umur = filter_var($_POST['umur'] ?? 0, FILTER_VALIDATE_INT);
     $berat = filter_var($_POST['berat_badan'] ?? 0, FILTER_VALIDATE_FLOAT);
@@ -42,17 +43,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bb_ideal_min = round(18.5 * ($tinggi_m * $tinggi_m), 1);
     $bb_ideal_max = round(22.9 * ($tinggi_m * $tinggi_m), 1);
 
-    // Simpan ke database dengan Prepared Statements
-    try {
-        $stmt = $pdo->prepare("INSERT INTO cek_bmi (nama_user, umur, berat_badan, tinggi_badan, bmi, kondisi) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$nama, $umur, $berat, $tinggi, $bmi, $kondisi]);
-        $insertedId = $pdo->lastInsertId();
-    } catch (\Throwable $e) {
-        $insertedId = 0;
+    // Smart Storage:
+    // Jika member (authenticated), simpan ke database dengan user_id server session.
+    // Jika guest, jangan simpan ke tabel pengguna; simpan sementara di session saja.
+    $userId = isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] > 0 ? (int)$_SESSION['user_id'] : null;
+    $insertedId = null;
+
+    if ($userId !== null) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO cek_bmi (user_id, nama_user, umur, berat_badan, tinggi_badan, bmi, kondisi) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$userId, $nama, $umur, $berat, $tinggi, $bmi, $kondisi]);
+            $insertedId = (int)$pdo->lastInsertId();
+        } catch (\Throwable $e) {
+            $insertedId = null;
+        }
     }
 
     // Simpan hasil ke session agar tidak terekspos di URL atau bisa diakses kembali
     $_SESSION['bmi_result'] = [
+        'id_bmi' => $insertedId,
+        'user_id' => $userId,
         'nama' => $nama,
         'umur' => $umur,
         'berat' => $berat,

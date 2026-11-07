@@ -2,6 +2,7 @@
 $pageTitle = 'Edit Data BMI — HealthCheck';
 $activePage = 'admin';
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
 require_once __DIR__ . '/../auth/login_cek.php';
 require_once __DIR__ . '/../auth/role.php';
 
@@ -11,14 +12,7 @@ if (!is_admin()) {
 }
 
 $id_bmi = (int)($_GET['id_bmi'] ?? $_GET['id'] ?? 0);
-$stmt = $pdo->prepare("SELECT * FROM cek_bmi WHERE id_bmi = ?");
-$stmt->execute([$id_bmi]);
-$data = $stmt->fetch();
-
-if (!$data) {
-    header("Location: ../admin/admin.php?pesan=not_found");
-    exit;
-}
+$data = assert_record_access($pdo, 'cek_bmi', 'id_bmi', $id_bmi);
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -42,6 +36,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                 <div class="p-4 p-md-5">
                     <form action="bmi_update.php" method="POST">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="id_bmi" value="<?= $data['id_bmi'] ?>">
                         
                         <div class="mb-3">

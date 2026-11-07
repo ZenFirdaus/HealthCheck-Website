@@ -6,9 +6,8 @@
  * Includes prepared-statement safe helpers and auto-schema initialization.
  */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/session.php';
+require_once __DIR__ . '/csrf.php';
 
 class Database {
     private static ?PDO $instance = null;
@@ -36,11 +35,15 @@ class Database {
             self::$driver = 'mysql';
         } catch (\Throwable $e) {
             // Fallback to SQLite database file
-            $sqlitePath = __DIR__ . '/../database/healthcheck.sqlite';
+            $sqlitePath = getenv('HEALTHCHECK_DB_PATH') ?: (__DIR__ . '/../database/healthcheck.sqlite');
             $pdo = new PDO("sqlite:" . $sqlitePath, null, null, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_TIMEOUT => 5,
             ]);
+            $pdo->exec("PRAGMA journal_mode = WAL;");
+            $pdo->exec("PRAGMA busy_timeout = 5000;");
+            $pdo->exec("PRAGMA foreign_keys = ON;");
             self::$instance = $pdo;
             self::$driver = 'sqlite';
         }
@@ -121,13 +124,13 @@ class Database {
         $stmt->execute(['admin']);
         if ($stmt->fetchColumn() == 0) {
             $stmtInsert = $db->prepare("INSERT INTO user (username, password, role) VALUES (?, ?, ?)");
-            $stmtInsert->execute(['admin', 'admin123', 'admin']);
+            $stmtInsert->execute(['admin', password_hash('admin123', PASSWORD_DEFAULT), 'admin']);
         }
 
         $stmt->execute(['user']);
         if ($stmt->fetchColumn() == 0) {
             $stmtInsert = $db->prepare("INSERT INTO user (username, password, role) VALUES (?, ?, ?)");
-            $stmtInsert->execute(['user', 'user123', 'user']);
+            $stmtInsert->execute(['user', password_hash('user123', PASSWORD_DEFAULT), 'user']);
         }
     }
 }

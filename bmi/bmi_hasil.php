@@ -1,30 +1,59 @@
 <?php
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/session.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
+
+// Ambil data berdasarkan ID spesifik atau dari session sebelum header di-render
+$res = null;
+
+if (isset($_GET['id']) && (int)$_GET['id'] > 0) {
+    $record = assert_record_access($pdo, 'cek_bmi', 'id_bmi', (int)$_GET['id']);
+    $tinggi_m = (float)$record['tinggi_badan'] / 100;
+    $res = [
+        'id_bmi' => (int)$record['id_bmi'],
+        'user_id' => $record['user_id'] ? (int)$record['user_id'] : null,
+        'nama' => $record['nama_user'],
+        'umur' => $record['umur'],
+        'berat' => $record['berat_badan'],
+        'tinggi' => $record['tinggi_badan'],
+        'bmi' => (float)$record['bmi'],
+        'kondisi' => $record['kondisi'],
+        'warna' => str_contains($record['kondisi'], 'Normal') ? 'success' : ((str_contains($record['kondisi'], 'Kurus') || str_contains($record['kondisi'], 'Kelebihan')) ? 'warning' : 'danger'),
+        'bb_min' => round(18.5 * ($tinggi_m * $tinggi_m), 1),
+        'bb_max' => round(22.9 * ($tinggi_m * $tinggi_m), 1)
+    ];
+} else {
+    $res = $_SESSION['bmi_result'] ?? null;
+    if ($res) {
+        if (isset($res['user_id']) && $res['user_id'] !== null && !can_access_user_data((int)$res['user_id'])) {
+            http_response_code(403);
+            die("403 Forbidden: Anda tidak memiliki hak akses terhadap hasil pemeriksaan ini.");
+        }
+    } else {
+        if (isset($_GET['bmi'])) {
+            $bmi = floatval($_GET['bmi']);
+            $kondisi = htmlspecialchars($_GET['kondisi'] ?? 'Normal');
+            $res = [
+                'nama' => 'Pengguna',
+                'umur' => '-',
+                'berat' => '-',
+                'tinggi' => '-',
+                'bmi' => $bmi,
+                'kondisi' => $kondisi,
+                'warna' => ($bmi >= 18.5 && $bmi <= 22.9) ? 'success' : (($bmi < 18.5) ? 'warning' : 'danger'),
+                'bb_min' => '-',
+                'bb_max' => '-'
+            ];
+        } else {
+            header("Location: bmi_form.php");
+            exit;
+        }
+    }
+}
+
 $pageTitle = 'Hasil Perhitungan BMI — HealthCheck';
 $activePage = 'bmi';
 require_once __DIR__ . '/../includes/header.php';
-
-// Ambil data dari session atau fallback ke query param (backward compatibility)
-$res = $_SESSION['bmi_result'] ?? null;
-if (!$res) {
-    if (isset($_GET['bmi'])) {
-        $bmi = floatval($_GET['bmi']);
-        $kondisi = htmlspecialchars($_GET['kondisi'] ?? 'Normal');
-        $res = [
-            'nama' => 'Pengguna',
-            'umur' => '-',
-            'berat' => '-',
-            'tinggi' => '-',
-            'bmi' => $bmi,
-            'kondisi' => $kondisi,
-            'warna' => ($bmi >= 18.5 && $bmi <= 24.9) ? 'success' : (($bmi < 18.5) ? 'warning' : 'danger'),
-            'bb_min' => '-',
-            'bb_max' => '-'
-        ];
-    } else {
-        header("Location: bmi_form.php");
-        exit;
-    }
-}
 
 $bmiVal = $res['bmi'];
 $kondisi = $res['kondisi'];

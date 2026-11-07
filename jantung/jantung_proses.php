@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
     $nama = trim($_POST['nama_user'] ?? '');
     $umur = filter_var($_POST['umur'] ?? 0, FILTER_VALIDATE_INT);
     $rhr = filter_var($_POST['resting_hr'] ?? 0, FILTER_VALIDATE_INT);
@@ -63,13 +64,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]
     ];
 
-    // Simpan ke DB
-    try {
-        $stmt = $pdo->prepare("INSERT INTO cek_jantung (nama_user, umur, resting_hr, max_hr, kategori, catatan) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$nama, $umur, $rhr, $maxHr, $kategoriRhr, $penjelasanRhr]);
-    } catch (\Throwable $e) {}
+    // Smart Storage:
+    // Jika member (authenticated), simpan ke database dengan user_id server session.
+    // Jika guest, simpan sementara di session saja.
+    $userId = isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] > 0 ? (int)$_SESSION['user_id'] : null;
+    $insertedId = null;
+
+    if ($userId !== null) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO cek_jantung (user_id, nama_user, umur, resting_hr, max_hr, kategori, catatan) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$userId, $nama, $umur, $rhr, $maxHr, $kategoriRhr, $penjelasanRhr]);
+            $insertedId = (int)$pdo->lastInsertId();
+        } catch (\Throwable $e) {
+            $insertedId = null;
+        }
+    }
 
     $_SESSION['jantung_result'] = [
+        'id_jantung' => $insertedId,
+        'user_id' => $userId,
         'nama' => $nama,
         'umur' => $umur,
         'rhr' => $rhr,

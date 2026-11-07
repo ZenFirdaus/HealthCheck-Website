@@ -28,6 +28,7 @@ $pesan = $_GET['pesan'] ?? '';
                     <?php endif; ?>
 
                     <form action="login_admin_proses.php" method="POST">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label class="form-label" for="username">Username Admin</label>
                             <input type="text" name="username" id="username" class="form-control" placeholder="admin" required autofocus>

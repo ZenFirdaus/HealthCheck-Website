@@ -1,7 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/session.php';
+require_once __DIR__ . '/csrf.php';
 $pageTitle = $pageTitle ?? 'HealthCheck — Website Cek Kesehatan';
 $activePage = $activePage ?? 'home';
 $username = $_SESSION['username'] ?? null;
@@ -56,12 +55,18 @@ if ($scriptDir && $projectRoot && $scriptDir !== $projectRoot && str_starts_with
                     <a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="<?= $relPath ?>index.php">Beranda</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle <?= in_array($activePage, ['bmi', 'bmr', 'kalori', 'jantung', 'mental']) ? 'active' : '' ?>" href="#" role="button" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle <?= in_array($activePage, ['bmi', 'bmr', 'kalori', 'whtr', 'body_fat', 'cairan', 'jantung', 'mental']) ? 'active' : '' ?>" href="#" role="button" data-bs-toggle="dropdown">
                         Kalkulator Kesehatan
                     </a>
                     <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.75rem; letter-spacing:0.05em;">Gizi & Komposisi Tubuh</h6></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>bmi/bmi_form.php">Indeks Massa Tubuh (BMI)</a></li>
-                        <li><a class="dropdown-item" href="<?= $relPath ?>bmr/bmr_form.php">Kebutuhan Kalori & BMR</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>bmr/bmr_form.php">Kebutuhan Kalori & Makronutrisi</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>whtr/whtr_form.php">Rasio Pinggang ke Tinggi (WHtR)</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>body_fat/body_fat_form.php">Persentase Lemak Tubuh (US Navy)</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>cairan/cairan_form.php">Kebutuhan Cairan Harian</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.75rem; letter-spacing:0.05em;">Kardiovaskular & Mental</h6></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>jantung/jantung_form.php">Detak Jantung & Zona Kardio</a></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>mental/mental_form.php">Skrining Kesehatan Mental (PHQ-4)</a></li>
                     </ul>

@@ -1,13 +1,75 @@
 <?php
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/session.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
+
+$res = null;
+
+if (isset($_GET['id']) && (int)$_GET['id'] > 0) {
+    $record = assert_record_access($pdo, 'cek_jantung', 'id_jantung', (int)$_GET['id']);
+    $maxHr = (int)$record['max_hr'];
+    $rhr = (int)$record['resting_hr'];
+    $hrr = $maxHr - $rhr;
+
+    $zones = [
+        [
+            'nama' => 'Zona 1: Pemulihan Ringan (50 - 60%)',
+            'min' => round($rhr + (0.50 * $hrr)),
+            'max' => round($rhr + (0.60 * $hrr)),
+            'tujuan' => 'Pemanasan, pendinginan, dan pemulihan aktif setelah olahraga berat.',
+            'warna' => 'secondary'
+        ],
+        [
+            'nama' => 'Zona 2: Pembakaran Lemak & Stamina (60 - 70%)',
+            'min' => round($rhr + (0.60 * $hrr)),
+            'max' => round($rhr + (0.70 * $hrr)),
+            'tujuan' => 'Meningkatkan efisiensi pembakaran lemak dasar dan daya tahan tubuh jangka panjang.',
+            'warna' => 'success'
+        ],
+        [
+            'nama' => 'Zona 3: Aerobik & Kardio Paru (70 - 80%)',
+            'min' => round($rhr + (0.70 * $hrr)),
+            'max' => round($rhr + (0.80 * $hrr)),
+            'tujuan' => 'Memperkuat otot jantung dan kapasitas paru-paru secara optimal.',
+            'warna' => 'primary'
+        ],
+        [
+            'nama' => 'Zona 4: Anaerobik Intensif (80 - 90%)',
+            'min' => round($rhr + (0.80 * $hrr)),
+            'max' => round($rhr + (0.90 * $hrr)),
+            'tujuan' => 'Melatih ambang laktat dan kecepatan sprint (lakukan dalam durasi pendek).',
+            'warna' => 'warning'
+        ]
+    ];
+
+    $res = [
+        'id_jantung' => (int)$record['id_jantung'],
+        'user_id' => $record['user_id'] ? (int)$record['user_id'] : null,
+        'nama' => $record['nama_user'],
+        'umur' => (int)$record['umur'],
+        'rhr' => $rhr,
+        'maxHr' => $maxHr,
+        'kategoriRhr' => $record['kategori'],
+        'warna' => str_contains($record['kategori'], 'Normal') ? 'success' : ((str_contains($record['kategori'], 'Atletik') || str_contains($record['kategori'], 'Rendah')) ? 'info' : 'danger'),
+        'penjelasanRhr' => $record['catatan'],
+        'zones' => $zones
+    ];
+} else {
+    $res = $_SESSION['jantung_result'] ?? null;
+    if ($res) {
+        if (isset($res['user_id']) && $res['user_id'] !== null && !can_access_user_data((int)$res['user_id'])) {
+            http_response_code(403);
+            die("403 Forbidden: Anda tidak memiliki hak akses terhadap hasil pemeriksaan ini.");
+        }
+    } else {
+        header("Location: jantung_form.php");
+        exit;
+    }
+}
+
 $pageTitle = 'Hasil Analisis Detak Jantung & Zona Kardio — HealthCheck';
 $activePage = 'jantung';
 require_once __DIR__ . '/../includes/header.php';
-
-$res = $_SESSION['jantung_result'] ?? null;
-if (!$res) {
-    header("Location: jantung_form.php");
-    exit;
-}
 ?>
 
 <div class="container py-4">

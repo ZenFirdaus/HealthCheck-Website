@@ -1,9 +1,14 @@
 <?php
 $pageTitle = 'Kalkulator Detak Jantung & Zona Kardio — HealthCheck';
 $activePage = 'jantung';
+require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
 
-$defaultName = $_SESSION['username'] ?? '';
+$profile = get_current_user_profile($pdo);
+$defaultName = $profile['nama_lengkap'] ?? ($_SESSION['username'] ?? '');
+$calcAge = !empty($profile['tanggal_lahir']) ? calculate_age_from_dob($profile['tanggal_lahir']) : null;
+$defaultUmur = ($calcAge !== null && $calcAge >= 10 && $calcAge <= 100) ? $calcAge : 25;
 ?>
 
 <div class="container py-4">
@@ -32,6 +37,7 @@ $defaultName = $_SESSION['username'] ?? '';
                     <?php endif; ?>
 
                     <form action="jantung_proses.php" method="POST" id="hrForm" onsubmit="return validateHrForm()">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label class="form-label" for="nama_user">Nama Lengkap <span class="text-danger">*</span></label>
                             <input type="text" name="nama_user" id="nama_user" class="form-control" placeholder="Contoh: Budi Santoso" value="<?= htmlspecialchars($defaultName) ?>" required>
@@ -40,7 +46,7 @@ $defaultName = $_SESSION['username'] ?? '';
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label" for="umur">Umur (tahun) <span class="text-danger">*</span></label>
-                                <input type="number" name="umur" id="umur" class="form-control" placeholder="25" min="10" max="100" value="25" required>
+                                <input type="number" name="umur" id="umur" class="form-control" placeholder="25" min="10" max="100" value="<?= htmlspecialchars((string)$defaultUmur) ?>" required>
                                 <div class="form-text small">Rentang: 10 - 100 tahun</div>
                             </div>
                             <div class="col-md-6">

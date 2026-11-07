@@ -2,6 +2,8 @@
 $pageTitle = 'Edit Data BMR — HealthCheck';
 $activePage = 'admin';
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/bmr_helper.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
 require_once __DIR__ . '/../auth/login_cek.php';
 require_once __DIR__ . '/../auth/role.php';
 
@@ -11,14 +13,7 @@ if (!is_admin()) {
 }
 
 $id_bmr = (int)($_GET['id_bmr'] ?? $_GET['id'] ?? 0);
-$stmt = $pdo->prepare("SELECT * FROM cek_bmr WHERE id_bmr = ?");
-$stmt->execute([$id_bmr]);
-$data = $stmt->fetch();
-
-if (!$data) {
-    header("Location: ../admin/admin.php?pesan=not_found");
-    exit;
-}
+$data = assert_record_access($pdo, 'cek_bmr', 'id_bmr', $id_bmr);
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -42,6 +37,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                 <div class="p-4 p-md-5">
                     <form action="bmr_update.php" method="POST">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="id_bmr" value="<?= $data['id_bmr'] ?>">
 
                         <div class="mb-3">
@@ -63,7 +59,7 @@ require_once __DIR__ . '/../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="row g-3 mb-4">
+                        <div class="row g-3 mb-3">
                             <div class="col-6">
                                 <label class="form-label" for="berat_badan">Berat Badan (kg)</label>
                                 <input type="number" step="0.1" name="berat_badan" id="berat_badan" class="form-control" value="<?= $data['berat_badan'] ?>" min="20" max="300" required>
@@ -72,6 +68,34 @@ require_once __DIR__ . '/../includes/header.php';
                                 <label class="form-label" for="tinggi_badan">Tinggi Badan (cm)</label>
                                 <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan" class="form-control" value="<?= $data['tinggi_badan'] ?>" min="80" max="250" required>
                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="aktivitas">Tingkat Aktivitas Fisik <span class="text-danger">*</span></label>
+                            <select name="aktivitas" id="aktivitas" class="form-select" required>
+                                <?php 
+                                $currentKey = get_activity_key_from_db($data['aktivitas'] ?? '');
+                                foreach (get_bmr_activity_levels() as $k => $act): 
+                                ?>
+                                    <option value="<?= $k ?>" <?= ($currentKey === (string)$k) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($act['description']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="target_tujuan">Sasaran Berat Badan & Nutrisi <span class="text-danger">*</span></label>
+                            <select name="target_tujuan" id="target_tujuan" class="form-select" required>
+                                <?php 
+                                $currentGoal = $data['target_tujuan'] ?? 'maintain';
+                                foreach (get_dietary_goals() as $gKey => $goal): 
+                                ?>
+                                    <option value="<?= $gKey ?>" <?= ($currentGoal === $gKey) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($goal['label']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
                         <div class="d-flex gap-2">

@@ -1,13 +1,42 @@
 <?php
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/session.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
+
+$res = null;
+
+if (isset($_GET['id']) && (int)$_GET['id'] > 0) {
+    $record = assert_record_access($pdo, 'cek_mental', 'id_mental', (int)$_GET['id']);
+    $total = (int)$record['total_skor'];
+    $warna = ($total <= 2) ? 'success' : (($total <= 5) ? 'info' : (($total <= 8) ? 'warning' : 'danger'));
+
+    $res = [
+        'id_mental' => (int)$record['id_mental'],
+        'user_id' => $record['user_id'] ? (int)$record['user_id'] : null,
+        'nama' => $record['nama_user'],
+        'skorCemas' => (int)$record['skor_cemas'],
+        'skorDepresi' => (int)$record['skor_depresi'],
+        'totalSkor' => $total,
+        'tingkat' => $record['tingkat'],
+        'warna' => $warna,
+        'anjuran' => $record['anjuran']
+    ];
+} else {
+    $res = $_SESSION['mental_result'] ?? null;
+    if ($res) {
+        if (isset($res['user_id']) && $res['user_id'] !== null && !can_access_user_data((int)$res['user_id'])) {
+            http_response_code(403);
+            die("403 Forbidden: Anda tidak memiliki hak akses terhadap hasil pemeriksaan ini.");
+        }
+    } else {
+        header("Location: mental_form.php");
+        exit;
+    }
+}
+
 $pageTitle = 'Hasil Skrining Kesehatan Mental (PHQ-4) — HealthCheck';
 $activePage = 'mental';
 require_once __DIR__ . '/../includes/header.php';
-
-$res = $_SESSION['mental_result'] ?? null;
-if (!$res) {
-    header("Location: mental_form.php");
-    exit;
-}
 ?>
 
 <div class="container py-4">

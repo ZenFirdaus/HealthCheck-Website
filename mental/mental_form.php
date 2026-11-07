@@ -1,9 +1,12 @@
 <?php
 $pageTitle = 'Skrining Kesehatan Mental (PHQ-4) — HealthCheck';
 $activePage = 'mental';
+require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
 
-$defaultName = $_SESSION['username'] ?? '';
+$profile = get_current_user_profile($pdo);
+$defaultName = $profile['nama_lengkap'] ?? ($_SESSION['username'] ?? '');
 ?>
 
 <div class="container py-4">
@@ -25,11 +28,18 @@ $defaultName = $_SESSION['username'] ?? '';
                 </div>
 
                 <div class="p-4 p-md-5">
+                    <?php if (isset($_GET['pesan']) && $_GET['pesan'] === 'invalid_input'): ?>
+                        <div class="alert alert-danger small mb-4">
+                            <i class="bi bi-exclamation-circle-fill me-2"></i> Mohon lengkapi nama dan seluruh pertanyaan skrining dengan pilihan yang valid.
+                        </div>
+                    <?php endif; ?>
+
                     <p class="small mb-4" style="color: var(--muted);">
                         Pilihlah salah satu opsi jawaban yang paling menggambarkan perasaan Anda <strong>selama 2 minggu terakhir</strong>. Tidak ada jawaban benar atau salah.
                     </p>
 
                     <form action="mental_proses.php" method="POST">
+                        <?= csrf_field() ?>
                         <div class="mb-4">
                             <label class="form-label" for="nama_user">Nama atau Inisial <span class="text-danger">*</span></label>
                             <input type="text" name="nama_user" id="nama_user" class="form-control" placeholder="Contoh: Budi" value="<?= htmlspecialchars($defaultName) ?>" required>

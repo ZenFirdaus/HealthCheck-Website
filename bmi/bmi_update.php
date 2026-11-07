@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/auth_helper.php';
 require_once __DIR__ . '/../auth/login_cek.php';
 require_once __DIR__ . '/../auth/role.php';
 
@@ -9,16 +10,20 @@ if (!is_admin()) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
     $id_bmi = (int)($_POST['id_bmi'] ?? 0);
     $nama = trim($_POST['nama_user'] ?? '');
     $umur = filter_var($_POST['umur'] ?? 0, FILTER_VALIDATE_INT);
     $berat = filter_var($_POST['berat_badan'] ?? 0, FILTER_VALIDATE_FLOAT);
     $tinggi = filter_var($_POST['tinggi_badan'] ?? 0, FILTER_VALIDATE_FLOAT);
 
-    if ($id_bmi <= 0 || empty($nama) || !$umur || !$berat || !$tinggi || $berat <= 0 || $tinggi <= 0) {
+    if ($id_bmi <= 0 || empty($nama) || !$umur || !$berat || !$tinggi || 
+        $berat < 10 || $berat > 350 || $tinggi < 50 || $tinggi > 250 || $umur < 5 || $umur > 120) {
         header("Location: ../admin/admin.php?pesan=invalid_input");
         exit;
     }
+
+    assert_record_access($pdo, 'cek_bmi', 'id_bmi', $id_bmi);
 
     $tinggi_m = $tinggi / 100;
     $bmi = round($berat / ($tinggi_m * $tinggi_m), 1);

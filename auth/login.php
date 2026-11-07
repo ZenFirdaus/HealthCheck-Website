@@ -45,6 +45,7 @@ $pesan = $_GET['pesan'] ?? '';
                     <?php endif; ?>
 
                     <form action="login_user_proses.php" method="POST">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label class="form-label" for="username">Username</label>
                             <input type="text" name="username" id="username" class="form-control" placeholder="Masukkan username" required autofocus>

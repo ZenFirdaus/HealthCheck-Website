@@ -1,7 +1,5 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../includes/session.php';
 if (!isset($_SESSION['username'])) {
     $scriptDir = str_replace('\\', '/', realpath(dirname($_SERVER['SCRIPT_FILENAME'] ?? '')));
     $projectRoot = str_replace('\\', '/', realpath(__DIR__ . '/..'));
