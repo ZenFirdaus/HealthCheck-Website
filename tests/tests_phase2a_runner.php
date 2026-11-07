@@ -16,8 +16,9 @@ echo "=== Memulai HealthCheck Phase 2A Comprehensive Test Suite (30 Tests)===\n"
 echo "======================================================================\n";
 
 // Setup isolated test database
-$mainDbPath = __DIR__ . '/database/healthcheck.sqlite';
-$testDbPath = __DIR__ . '/database/healthcheck_test_phase2a.sqlite';
+$projectRoot = dirname(__DIR__);
+$mainDbPath = $projectRoot . '/database/healthcheck.sqlite';
+$testDbPath = $projectRoot . '/database/healthcheck_test_phase2a.sqlite';
 
 $mainPdo = new PDO("sqlite:" . $mainDbPath);
 $mainPdo->exec("PRAGMA wal_checkpoint(TRUNCATE);");
@@ -33,7 +34,7 @@ echo "Database pengujian terpisah disiapkan: {$testDbPath}\n";
 
 // Start background PHP server with HEALTHCHECK_DB_PATH set
 $cmd = sprintf('HEALTHCHECK_DB_PATH=%s php -S %s:%d -t "%s" > /tmp/php_phase2a_test.log 2>&1 & echo $!',
-    escapeshellarg($testDbPath), $host, $port, __DIR__
+    escapeshellarg($testDbPath), $host, $port, $projectRoot
 );
 $pid = (int)shell_exec($cmd);
 echo "Server test Phase 2A aktif (PID: {$pid}) pada {$baseUrl}\n";
@@ -42,8 +43,10 @@ register_shutdown_function(function() use ($pid, $testDbPath) {
     if ($pid > 0) {
         shell_exec("kill -9 {$pid} 2>/dev/null");
     }
-    if (file_exists($testDbPath)) {
-        unlink($testDbPath);
+    foreach ([$testDbPath, $testDbPath . '-wal', $testDbPath . '-shm'] as $f) {
+        if (file_exists($f)) {
+            unlink($f);
+        }
     }
 });
 
@@ -158,8 +161,8 @@ function loginAdmin(string $baseUrl, string $cookieFile, string $user, string $p
     return ($res['status'] === 302);
 }
 
-require_once __DIR__ . '/includes/bmr_helper.php';
-require_once __DIR__ . '/includes/auth_helper.php';
+require_once $projectRoot . '/includes/bmr_helper.php';
+require_once $projectRoot . '/includes/auth_helper.php';
 
 // ===================================================================
 // A. BMR TESTS (Tests 1 - 7)
@@ -742,8 +745,8 @@ echo "Hasil: {$results['test28']['status']} - {$results['test28']['msg']}\n";
 
 // 29. Migration Phase 1B tetap dapat dijalankan secara idempoten
 echo "[Test 29] Idempotensi migration runner...\n";
-$migOutput = shell_exec("HEALTHCHECK_DB_PATH=" . escapeshellarg($testDbPath) . " php " . escapeshellarg(__DIR__ . '/database/migrate.php'));
-$migStatus = shell_exec("HEALTHCHECK_DB_PATH=" . escapeshellarg($testDbPath) . " php " . escapeshellarg(__DIR__ . '/database/migrate.php') . " --status");
+$migOutput = shell_exec("HEALTHCHECK_DB_PATH=" . escapeshellarg($testDbPath) . " php " . escapeshellarg($projectRoot . '/database/migrate.php'));
+$migStatus = shell_exec("HEALTHCHECK_DB_PATH=" . escapeshellarg($testDbPath) . " php " . escapeshellarg($projectRoot . '/database/migrate.php') . " --status");
 if (strpos($migOutput, 'Nothing to migrate') !== false && strpos($migStatus, '[APPLIED]') !== false) {
     $results['test29'] = ['status' => 'PASS', 'msg' => 'Migration runner idempoten dan status APPLIED terverifikasi'];
 } else {
@@ -754,11 +757,11 @@ echo "Hasil: {$results['test29']['status']} - {$results['test29']['msg']}\n";
 // 30. Seluruh file PHP lolos php -l (Linting)
 echo "[Test 30] Verifikasi sintaks seluruh file PHP repositori (php -l)...\n";
 $phpFiles = [];
-$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
+$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($projectRoot));
 foreach ($iter as $item) {
     if ($item->isFile() && $item->getExtension() === 'php') {
         $path = $item->getPathname();
-        if (str_contains($path, '/backups_phase1a/') || str_contains($path, '/backups_phase1b/')) {
+        if (str_contains($path, '/backups/')) {
             continue;
         }
         $phpFiles[] = $path;

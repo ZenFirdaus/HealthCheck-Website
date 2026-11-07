@@ -13,7 +13,8 @@ echo "=== Memulai HealthCheck Phase 1B Comprehensive Test Suite   ===\n";
 echo "===============================================================\n";
 
 // 1. Start background PHP server
-$cmd = sprintf('php -S %s:%d -t "%s" > /tmp/php_phase1b_test.log 2>&1 & echo $!', $host, $port, __DIR__);
+$projectRoot = dirname(__DIR__);
+$cmd = sprintf('php -S %s:%d -t "%s" > /tmp/php_phase1b_test.log 2>&1 & echo $!', $host, $port, $projectRoot);
 $pid = (int)shell_exec($cmd);
 echo "Server test aktif (PID: {$pid}) pada {$baseUrl}\n";
 
@@ -74,7 +75,7 @@ function extractCsrf(string $html): ?string {
 }
 
 $tmpCookieDir = sys_get_temp_dir();
-$dbFile = __DIR__ . '/database/healthcheck.sqlite';
+$dbFile = $projectRoot . '/database/healthcheck.sqlite';
 $pdo = new PDO("sqlite:" . $dbFile, null, null, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -82,13 +83,16 @@ $pdo = new PDO("sqlite:" . $dbFile, null, null, [
 ]);
 $pdo->exec("PRAGMA journal_mode = WAL;");
 $pdo->exec("PRAGMA foreign_keys = ON;");
-$pdo->exec("DELETE FROM user WHERE username = 'user_b'");
+$pdo->exec("DELETE FROM user WHERE username NOT IN ('admin', 'user')");
 
 // -------------------------------------------------------------
 // TEST 1: Backup dan Restore Database
 // -------------------------------------------------------------
 echo "\n[Test 1] Pengujian Backup dan Restore Database...\n";
-$backupFile = __DIR__ . '/backups_phase1b/healthcheck_pre_phase1b.sqlite';
+$backupFile = $projectRoot . '/backups/phase1b/healthcheck_pre_phase1b.sqlite';
+if (!file_exists($backupFile)) {
+    $backupFile = $projectRoot . '/database/backups/healthcheck_pre_phase1b.sqlite';
+}
 $backupOk = file_exists($backupFile);
 $integrityOk = false;
 $userCount = 0;
@@ -112,7 +116,7 @@ echo "Hasil: {$results['test1']['status']} - {$results['test1']['msg']}\n";
 // TEST 2: Migrasi Database Berhasil
 // -------------------------------------------------------------
 echo "\n[Test 2] Verifikasi Eksekusi Migrasi Phase 1B...\n";
-$migOutput = shell_exec("php " . escapeshellarg(__DIR__ . '/database/migrate.php') . " --status");
+$migOutput = shell_exec("php " . escapeshellarg($projectRoot . '/database/migrate.php') . " --status");
 $tableProfile = $pdo->query("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='user_profile'")->fetchColumn();
 $bmiCols = $pdo->query("PRAGMA table_info(cek_bmi)")->fetchAll();
 $hasUserId = false;
@@ -131,7 +135,7 @@ echo "Hasil: {$results['test2']['status']} - {$results['test2']['msg']}\n";
 // TEST 3: Idempotensi Migrasi (Migrasi Ulang Tanpa Error)
 // -------------------------------------------------------------
 echo "\n[Test 3] Pengujian Idempotensi Migrasi (Eksekusi Kedua Kali)...\n";
-$secondRun = shell_exec("php " . escapeshellarg(__DIR__ . '/database/migrate.php'));
+$secondRun = shell_exec("php " . escapeshellarg($projectRoot . '/database/migrate.php'));
 $isIdempotent = (strpos($secondRun, 'Nothing to migrate') !== false);
 $integrityNow = $pdo->query("PRAGMA integrity_check;")->fetchColumn();
 
@@ -337,7 +341,7 @@ echo "Hasil: {$results['test10']['status']} - {$results['test10']['msg']}\n";
 // TEST 11: Isolasi Data Antarpengguna (User A vs User B)
 // -------------------------------------------------------------
 echo "\n[Test 11] Pengujian Isolasi Data Server-Side (User A vs User B)...\n";
-require_once __DIR__ . '/includes/auth_helper.php';
+require_once $projectRoot . '/includes/auth_helper.php';
 
 // Seed User B jika belum ada
 $stmtUb = $pdo->prepare("SELECT id FROM user WHERE username = 'user_b'");

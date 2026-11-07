@@ -10,7 +10,8 @@ $baseUrl = "http://{$host}:{$port}";
 echo "=== Memulai HealthCheck Phase 1A Test Suite ===\n";
 
 // 1. Start background PHP server
-$cmd = sprintf('php -S %s:%d -t "%s" > /tmp/php_test_server.log 2>&1 & echo $!', $host, $port, __DIR__);
+$projectRoot = dirname(__DIR__);
+$cmd = sprintf('php -S %s:%d -t "%s" > /tmp/php_test_server.log 2>&1 & echo $!', $host, $port, $projectRoot);
 $pid = (int)shell_exec($cmd);
 echo "Server testing aktif dengan PID: {$pid} pada {$baseUrl}\n";
 
@@ -317,7 +318,7 @@ echo "Hasil: {$results['test9']['status']} - {$results['test9']['msg']}\n";
 // ---------------------------------------------------------
 echo "\n[Test 10] Pengujian Penghapusan Data (POST vs GET Rejection)...\n";
 // Ambil ID rekaman yang baru dibuat via SQLite PDO terpisah tanpa memicu session_start
-$dbPath = __DIR__ . '/database/healthcheck.sqlite';
+$dbPath = $projectRoot . '/database/healthcheck.sqlite';
 $testPdo = new PDO("sqlite:" . $dbPath, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $lastBmiId = (int)$testPdo->query("SELECT MAX(id_bmi) FROM cek_bmi")->fetchColumn();
 
