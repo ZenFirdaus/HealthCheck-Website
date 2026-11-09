@@ -217,7 +217,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <a href="bmr_form.php" class="btn btn-primary-health px-4">
                             Hitung Ulang
                         </a>
-                        <a href="../cairan/cairan_form.php" class="btn btn-outline-secondary px-4">
+                        <a href="../cairan/cairan_form.php" class="btn btn-teal px-4">
                             Cek Kebutuhan Cairan
                         </a>
                         <a href="../index.php" class="btn btn-link ms-auto text-decoration-none" style="color: var(--muted);">Kembali ke Beranda</a>

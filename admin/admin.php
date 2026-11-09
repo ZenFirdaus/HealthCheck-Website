@@ -22,6 +22,11 @@ $totalFat = $pdo->query("SELECT COUNT(*) FROM cek_lemak_tubuh")->fetchColumn();
 $totalCairan = $pdo->query("SELECT COUNT(*) FROM cek_kebutuhan_cairan")->fetchColumn();
 $totalJantung = $pdo->query("SELECT COUNT(*) FROM cek_jantung")->fetchColumn();
 $totalMental = $pdo->query("SELECT COUNT(*) FROM cek_mental")->fetchColumn();
+$totalBp = $pdo->query("SELECT COUNT(*) FROM cek_tekanan_darah")->fetchColumn();
+$totalTidur = $pdo->query("SELECT COUNT(*) FROM cek_kualitas_tidur")->fetchColumn();
+$totalZona = $pdo->query("SELECT COUNT(*) FROM cek_zona_detak_jantung")->fetchColumn();
+$totalAktivitas = $pdo->query("SELECT COUNT(*) FROM cek_aktivitas_fisik")->fetchColumn();
+$totalStres = $pdo->query("SELECT COUNT(*) FROM cek_stres")->fetchColumn();
 
 // Ambil list data
 $listBmi = $pdo->query("SELECT * FROM cek_bmi ORDER BY id_bmi DESC")->fetchAll();
@@ -31,6 +36,11 @@ $listFat = $pdo->query("SELECT * FROM cek_lemak_tubuh ORDER BY id_fat DESC")->fe
 $listCairan = $pdo->query("SELECT * FROM cek_kebutuhan_cairan ORDER BY id_cairan DESC")->fetchAll();
 $listJantung = $pdo->query("SELECT * FROM cek_jantung ORDER BY id_jantung DESC")->fetchAll();
 $listMental = $pdo->query("SELECT * FROM cek_mental ORDER BY id_mental DESC")->fetchAll();
+$listBp = $pdo->query("SELECT * FROM cek_tekanan_darah ORDER BY id_bp DESC")->fetchAll();
+$listTidur = $pdo->query("SELECT * FROM cek_kualitas_tidur ORDER BY id_tidur DESC")->fetchAll();
+$listZona = $pdo->query("SELECT * FROM cek_zona_detak_jantung ORDER BY id_zona DESC")->fetchAll();
+$listAktivitas = $pdo->query("SELECT * FROM cek_aktivitas_fisik ORDER BY id_aktivitas DESC")->fetchAll();
+$listStres = $pdo->query("SELECT * FROM cek_stres ORDER BY id_stres DESC")->fetchAll();
 
 $pesan = $_GET['pesan'] ?? '';
 
@@ -139,6 +149,42 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="small fw-semibold" style="color: var(--muted);">Rekam Tensi Darah</div>
+                <div class="fs-3 fw-bold mt-1" style="color: var(--coral);"><?= $totalBp ?></div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="small fw-semibold" style="color: var(--muted);">Rekam Kualitas Tidur</div>
+                <div class="fs-3 fw-bold mt-1" style="color: var(--teal);"><?= $totalTidur ?></div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="small fw-semibold" style="color: var(--muted);">Rekam Zona Latihan</div>
+                <div class="fs-3 fw-bold mt-1" style="color: var(--blue);"><?= $totalZona ?></div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="small fw-semibold" style="color: var(--muted);">Rekam Aktivitas (IPAQ)</div>
+                <div class="fs-3 fw-bold mt-1" style="color: var(--emerald);"><?= $totalAktivitas ?></div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="small fw-semibold" style="color: var(--muted);">Rekam Stres (PSS-10)</div>
+                <div class="fs-3 fw-bold mt-1" style="color: var(--lavender);"><?= $totalStres ?></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation Tabs Data -->
     <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -148,12 +194,12 @@ require_once __DIR__ . '/../includes/header.php';
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="bmr-tab" data-bs-toggle="tab" data-bs-target="#tab-bmr" type="button" role="tab">
-                Data BMR & Kalori (<?= count($listBmr) ?>)
+                Data BMR (<?= count($listBmr) ?>)
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="whtr-tab" data-bs-toggle="tab" data-bs-target="#tab-whtr" type="button" role="tab">
-                Data WHtR (<?= count($listWhtr) ?>)
+                WHtR (<?= count($listWhtr) ?>)
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -163,7 +209,32 @@ require_once __DIR__ . '/../includes/header.php';
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="cairan-tab" data-bs-toggle="tab" data-bs-target="#tab-cairan" type="button" role="tab">
-                Kebutuhan Cairan (<?= count($listCairan) ?>)
+                Cairan (<?= count($listCairan) ?>)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="bp-tab" data-bs-toggle="tab" data-bs-target="#tab-bp" type="button" role="tab">
+                Tekanan Darah (<?= count($listBp) ?>)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tidur-tab" data-bs-toggle="tab" data-bs-target="#tab-tidur" type="button" role="tab">
+                Pola Tidur (<?= count($listTidur) ?>)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="zona-tab" data-bs-toggle="tab" data-bs-target="#tab-zona" type="button" role="tab">
+                Zona Kardio (<?= count($listZona) ?>)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="aktivitas-tab" data-bs-toggle="tab" data-bs-target="#tab-aktivitas" type="button" role="tab">
+                Aktivitas IPAQ (<?= count($listAktivitas) ?>)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="stres-tab" data-bs-toggle="tab" data-bs-target="#tab-stres" type="button" role="tab">
+                Stres PSS (<?= count($listStres) ?>)
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -173,7 +244,7 @@ require_once __DIR__ . '/../includes/header.php';
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="mental-tab" data-bs-toggle="tab" data-bs-target="#tab-mental" type="button" role="tab">
-                Skrining Mental (<?= count($listMental) ?>)
+                Mental PHQ (<?= count($listMental) ?>)
             </button>
         </li>
     </ul>
@@ -533,6 +604,248 @@ require_once __DIR__ . '/../includes/header.php';
                             <?php else: ?>
                                 <tr>
                                     <td colspan="7" class="text-center py-4 text-muted">Belum ada data skrining mental.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Tekanan Darah -->
+        <div class="tab-pane fade" id="tab-bp" role="tabpanel">
+            <div class="card overflow-hidden">
+                <div class="card-editorial-header d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: var(--primary);">Daftar Pemeriksaan Tekanan Darah</h6>
+                    <a href="../tekanan_darah/tekanan_darah_form.php" class="btn btn-sm btn-primary-health"><i class="bi bi-plus-lg me-1"></i>Pemeriksaan Baru</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Nama Pengguna</th>
+                                <th>Umur</th>
+                                <th>Sistolik</th>
+                                <th>Diastolik</th>
+                                <th>Nadi</th>
+                                <th>Kategori</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listBp) > 0): ?>
+                                <?php foreach ($listBp as $row): ?>
+                                    <tr>
+                                        <td><strong>#<?= $row['id_bp'] ?></strong></td>
+                                        <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_user']) ?></td>
+                                        <td><?= $row['umur'] ?> thn</td>
+                                        <td><span class="badge border fs-6 text-dark" style="background-color: var(--light-bg);"><?= $row['sistolik'] ?> mmHg</span></td>
+                                        <td><span class="badge border fs-6 text-dark" style="background-color: var(--light-bg);"><?= $row['diastolik'] ?> mmHg</span></td>
+                                        <td><?= $row['detak_nadi'] ? $row['detak_nadi'] . ' BPM' : '-' ?></td>
+                                        <td>
+                                            <span class="badge bg-<?= str_contains($row['kategori'], 'Normal') ? 'success' : (str_contains($row['kategori'], 'Krisis') || str_contains($row['kategori'], 'Tingkat 2') ? 'danger' : 'warning') ?>-subtle">
+                                                <?= htmlspecialchars($row['kategori']) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-muted"><?= $row['created_at'] ?? '-' ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">Belum ada data tekanan darah.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Kualitas Tidur -->
+        <div class="tab-pane fade" id="tab-tidur" role="tabpanel">
+            <div class="card overflow-hidden">
+                <div class="card-editorial-header d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: var(--primary);">Daftar Penilaian Pola & Higiene Tidur</h6>
+                    <a href="../tidur/tidur_form.php" class="btn btn-sm btn-primary-health"><i class="bi bi-plus-lg me-1"></i>Penilaian Baru</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Nama Pengguna</th>
+                                <th>Durasi</th>
+                                <th>Latensi</th>
+                                <th>Terbangun</th>
+                                <th>Efisiensi</th>
+                                <th>Kategori</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listTidur) > 0): ?>
+                                <?php foreach ($listTidur as $row): ?>
+                                    <tr>
+                                        <td><strong>#<?= $row['id_tidur'] ?></strong></td>
+                                        <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_user']) ?></td>
+                                        <td><?= $row['durasi_jam'] ?> Jam</td>
+                                        <td><?= $row['latensi_menit'] ?> Menit</td>
+                                        <td><?= $row['frekuensi_terbangun'] ?>x</td>
+                                        <td><span class="badge border fs-6 text-dark" style="background-color: var(--teal-light);"><?= $row['efisiensi_tidur'] ?>%</span></td>
+                                        <td>
+                                            <span class="badge bg-<?= str_contains($row['kategori_tidur'], 'Sangat Baik') ? 'success' : (str_contains($row['kategori_tidur'], 'Cukup') ? 'info' : (str_contains($row['kategori_tidur'], 'Optimal') ? 'warning' : 'danger')) ?>-subtle">
+                                                <?= htmlspecialchars($row['kategori_tidur']) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-muted"><?= $row['created_at'] ?? '-' ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">Belum ada data pola tidur.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 7: Zona Kardio -->
+        <div class="tab-pane fade" id="tab-zona" role="tabpanel">
+            <div class="card overflow-hidden">
+                <div class="card-editorial-header d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: var(--primary);">Daftar Zona Latihan Kardio (Karvonen & Zoladz)</h6>
+                    <a href="../zona_jantung/zona_jantung_form.php" class="btn btn-sm btn-primary-health"><i class="bi bi-plus-lg me-1"></i>Hitung Zona</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Nama Pengguna</th>
+                                <th>Umur</th>
+                                <th>RHR</th>
+                                <th>Max HR</th>
+                                <th>Metode</th>
+                                <th>Zona 2 (Fat Burn)</th>
+                                <th>Zona 3 (Aerobik)</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listZona) > 0): ?>
+                                <?php foreach ($listZona as $row): ?>
+                                    <tr>
+                                        <td><strong>#<?= $row['id_zona'] ?></strong></td>
+                                        <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_user']) ?></td>
+                                        <td><?= $row['umur'] ?> thn</td>
+                                        <td><?= $row['resting_hr'] ?> BPM</td>
+                                        <td><strong class="text-primary"><?= $row['max_hr'] ?> BPM</strong></td>
+                                        <td><span class="badge border text-dark" style="background-color: var(--light-bg);"><?= ucfirst($row['metode']) ?></span></td>
+                                        <td><span class="badge bg-success-subtle"><?= $row['zona_2_min'] ?>–<?= $row['zona_2_max'] ?> BPM</span></td>
+                                        <td><span class="badge bg-primary-subtle"><?= $row['zona_3_min'] ?>–<?= $row['zona_3_max'] ?> BPM</span></td>
+                                        <td class="text-muted"><?= $row['created_at'] ?? '-' ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">Belum ada data zona latihan.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 8: Aktivitas Fisik -->
+        <div class="tab-pane fade" id="tab-aktivitas" role="tabpanel">
+            <div class="card overflow-hidden">
+                <div class="card-editorial-header d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: var(--primary);">Daftar Evaluasi Aktivitas Fisik (IPAQ)</h6>
+                    <a href="../aktivitas_fisik/aktivitas_fisik_form.php" class="btn btn-sm btn-primary-health"><i class="bi bi-plus-lg me-1"></i>Evaluasi Baru</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Nama Pengguna</th>
+                                <th>Hari Berat</th>
+                                <th>Hari Sedang</th>
+                                <th>Hari Jalan</th>
+                                <th>Total MET</th>
+                                <th>Kategori</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listAktivitas) > 0): ?>
+                                <?php foreach ($listAktivitas as $row): ?>
+                                    <tr>
+                                        <td><strong>#<?= $row['id_aktivitas'] ?></strong></td>
+                                        <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_user']) ?></td>
+                                        <td><?= $row['hari_berat'] ?> hari</td>
+                                        <td><?= $row['hari_sedang'] ?> hari</td>
+                                        <td><?= $row['hari_jalan'] ?> hari</td>
+                                        <td><strong class="text-emerald"><?= number_format($row['total_met_menit'], 0, ',', '.') ?></strong> MET</td>
+                                        <td>
+                                            <span class="badge bg-<?= str_contains($row['kategori_aktivitas'], 'Tinggi') ? 'success' : (str_contains($row['kategori_aktivitas'], 'Sedang') ? 'info' : 'warning') ?>-subtle">
+                                                <?= htmlspecialchars($row['kategori_aktivitas']) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-muted"><?= $row['created_at'] ?? '-' ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">Belum ada data aktivitas fisik.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 9: Stres PSS-10 -->
+        <div class="tab-pane fade" id="tab-stres" role="tabpanel">
+            <div class="card overflow-hidden">
+                <div class="card-editorial-header d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0" style="color: var(--primary);">Daftar Penilaian Tingkat Stres (PSS-10)</h6>
+                    <a href="../stres/stres_form.php" class="btn btn-sm btn-primary-health"><i class="bi bi-plus-lg me-1"></i>Penilaian Baru</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Nama Pengguna</th>
+                                <th>Skor PSS</th>
+                                <th>Tingkat Stres</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listStres) > 0): ?>
+                                <?php foreach ($listStres as $row): ?>
+                                    <tr>
+                                        <td><strong>#<?= $row['id_stres'] ?></strong></td>
+                                        <td class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_user']) ?></td>
+                                        <td><span class="badge border fs-6 text-dark" style="background-color: var(--lavender-light);"><?= $row['skor_stres'] ?> / 40</span></td>
+                                        <td>
+                                            <span class="badge bg-<?= $row['skor_stres'] <= 13 ? 'success' : ($row['skor_stres'] <= 26 ? 'warning' : 'danger') ?>-subtle">
+                                                <?= htmlspecialchars($row['tingkat_stres']) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-muted"><?= $row['created_at'] ?? '-' ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">Belum ada data tingkat stres.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

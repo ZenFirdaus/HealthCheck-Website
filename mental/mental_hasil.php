@@ -134,7 +134,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <a href="mental_form.php" class="btn btn-primary-health px-4">
                             Skrining Ulang
                         </a>
-                        <a href="../index.php" class="btn btn-outline-secondary px-4">Kembali ke Beranda</a>
+                        <a href="../index.php" class="btn btn-blue px-4">Kembali ke Beranda</a>
                     </div>
                 </div>
             </div>

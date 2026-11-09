@@ -118,7 +118,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <a href="whtr_form.php" class="btn btn-primary-health px-4">
                             Hitung Ulang
                         </a>
-                        <a href="../body_fat/body_fat_form.php" class="btn btn-outline-secondary px-4">
+                        <a href="../body_fat/body_fat_form.php" class="btn btn-blue px-4">
                             Lanjut Cek Lemak Tubuh (US Navy)
                         </a>
                         <a href="../index.php" class="btn btn-link ms-auto text-decoration-none" style="color: var(--muted);">Kembali ke Beranda</a>

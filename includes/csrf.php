@@ -21,6 +21,12 @@ if (!function_exists('csrf_field')) {
     }
 }
 
+if (!function_exists('csrf_input')) {
+    function csrf_input(): string {
+        return csrf_field();
+    }
+}
+
 if (!function_exists('verify_csrf_token')) {
     function verify_csrf_token(?string $token): bool {
         if (empty($_SESSION['csrf_token']) || empty($token)) {

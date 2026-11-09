@@ -37,7 +37,15 @@ if ($scriptDir && $projectRoot && $scriptDir !== $projectRoot && str_starts_with
 </head>
 <body>
 
-<!-- Navbar HealthCheck -->
+<!-- Announcement Bar (Editorial Minimalist) -->
+<div class="announcement-bar">
+    <div class="container d-flex justify-content-center justify-content-md-between align-items-center">
+        <span><i class="bi bi-shield-check me-1 text-teal"></i> Platform Evaluasi Kesehatan Mandiri Berbasis Parameter Klinis Terstandar</span>
+        <a href="<?= $relPath ?>index.php#toolsGrid" class="d-none d-md-inline">Jelajahi 7 Alat Pemeriksaan &rarr;</a>
+    </div>
+</div>
+
+<!-- Navbar HealthCheck (Hims-Inspired Clean Healthcare) -->
 <nav class="navbar navbar-expand-lg navbar-health sticky-top">
     <div class="container">
         <a class="navbar-brand" href="<?= $relPath ?>index.php">
@@ -50,26 +58,39 @@ if ($scriptDir && $projectRoot && $scriptDir !== $projectRoot && str_starts_with
         </button>
 
         <div class="collapse navbar-collapse" id="navHealthContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item">
                     <a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="<?= $relPath ?>index.php">Beranda</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle <?= in_array($activePage, ['bmi', 'bmr', 'kalori', 'whtr', 'body_fat', 'cairan', 'jantung', 'mental']) ? 'active' : '' ?>" href="#" role="button" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle <?= in_array($activePage, ['bmi', 'bmr', 'kalori', 'whtr', 'body_fat', 'cairan', 'jantung', 'mental', 'tekanan_darah', 'tidur', 'zona_jantung', 'aktivitas_fisik', 'stres']) ? 'active' : '' ?>" href="#" role="button" data-bs-toggle="dropdown">
                         Kalkulator Kesehatan
                     </a>
                     <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.75rem; letter-spacing:0.05em;">Gizi & Komposisi Tubuh</h6></li>
+                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.72rem; letter-spacing:0.06em;">Gizi & Komposisi Tubuh</h6></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>bmi/bmi_form.php">Indeks Massa Tubuh (BMI)</a></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>bmr/bmr_form.php">Kebutuhan Kalori & Makronutrisi</a></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>whtr/whtr_form.php">Rasio Pinggang ke Tinggi (WHtR)</a></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>body_fat/body_fat_form.php">Persentase Lemak Tubuh (US Navy)</a></li>
                         <li><a class="dropdown-item" href="<?= $relPath ?>cairan/cairan_form.php">Kebutuhan Cairan Harian</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>aktivitas_fisik/aktivitas_fisik_form.php">Aktivitas Fisik (IPAQ)</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.75rem; letter-spacing:0.05em;">Kardiovaskular & Mental</h6></li>
-                        <li><a class="dropdown-item" href="<?= $relPath ?>jantung/jantung_form.php">Detak Jantung & Zona Kardio</a></li>
-                        <li><a class="dropdown-item" href="<?= $relPath ?>mental/mental_form.php">Skrining Kesehatan Mental (PHQ-4)</a></li>
+                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.72rem; letter-spacing:0.06em;">Kardiovaskular</h6></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>tekanan_darah/tekanan_darah_form.php">Tekanan Darah (Tensi)</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>jantung/jantung_form.php">Detak Jantung Istirahat</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>zona_jantung/zona_jantung_form.php">Zona Latihan Kardio</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header text-uppercase" style="font-size:0.72rem; letter-spacing:0.06em;">Tidur & Kesehatan Mental</h6></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>tidur/tidur_form.php">Pola & Higiene Tidur</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>stres/stres_form.php">Tingkat Stres (PSS-10)</a></li>
+                        <li><a class="dropdown-item" href="<?= $relPath ?>mental/mental_form.php">Skrining Mental (PHQ-4)</a></li>
                     </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= $activePage === 'education' ? 'active' : '' ?>" href="<?= $relPath ?>education/index.php">Pusat Edukasi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $relPath ?>index.php#metodologi">Panduan Klinis</a>
                 </li>
                 <?php if ($role === 'admin'): ?>
                 <li class="nav-item">
@@ -87,8 +108,18 @@ if ($scriptDir && $projectRoot && $scriptDir !== $projectRoot && str_starts_with
                             <i class="bi bi-person me-1"></i> <?= htmlspecialchars($username) ?> (<?= htmlspecialchars($role) ?>)
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header text-uppercase" style="font-size:0.72rem; letter-spacing:0.05em;">Menu Personal</h6></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/dashboard.php"><i class="bi bi-speedometer2 me-2 text-primary"></i>Personal Dashboard</a></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/goals.php"><i class="bi bi-flag me-2 text-primary"></i>Target & Milestone</a></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/checkin.php"><i class="bi bi-pencil-square me-2 text-primary"></i>Daily Check-in</a></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/habits.php"><i class="bi bi-check2-circle me-2 text-primary"></i>Habits Tracker</a></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/reminders.php"><i class="bi bi-bell me-2 text-primary"></i>Pengingat & Notifikasi</a></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/history.php"><i class="bi bi-clock-history me-2 text-primary"></i>Riwayat Pemeriksaan</a></li>
+                            <li><a class="dropdown-item" href="<?= $relPath ?>user/report_download.php"><i class="bi bi-file-earmark-pdf me-2 text-primary"></i>Unduh Laporan PDF</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <?php if ($role === 'admin'): ?>
-                                <li><a class="dropdown-item" href="<?= $relPath ?>admin/admin.php"><i class="bi bi-speedometer me-2"></i>Kelola Data</a></li>
+                                <li><a class="dropdown-item" href="<?= $relPath ?>admin/admin.php"><i class="bi bi-shield-lock me-2 text-secondary"></i>Portal Administrator</a></li>
+                                <li><hr class="dropdown-divider"></li>
                             <?php endif; ?>
                             <li><a class="dropdown-item text-danger" href="<?= $relPath ?>auth/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
                         </ul>
@@ -106,4 +137,4 @@ if ($scriptDir && $projectRoot && $scriptDir !== $projectRoot && str_starts_with
     </div>
 </nav>
 
-<main class="py-4">
+<main class="pb-5">

@@ -140,7 +140,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <a href="cairan_form.php" class="btn btn-primary-health px-4">
                             Hitung Ulang
                         </a>
-                        <a href="../bmr/bmr_form.php" class="btn btn-outline-secondary px-4">
+                        <a href="../bmr/bmr_form.php" class="btn btn-emerald px-4">
                             Cek Kebutuhan Kalori & Makronutrisi
                         </a>
                         <a href="../index.php" class="btn btn-link ms-auto text-decoration-none" style="color: var(--muted);">Kembali ke Beranda</a>

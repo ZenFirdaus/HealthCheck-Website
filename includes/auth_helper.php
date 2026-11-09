@@ -47,8 +47,14 @@ if (!function_exists('assert_record_access')) {
      * If unauthorized, halts execution with HTTP 403 Forbidden.
      */
     function assert_record_access(PDO $pdo, string $table, string $idColumn, int $recordId): array {
-        // Whitelist allowed assessment tables to prevent SQL injection
-        $allowedTables = ['cek_bmi', 'cek_bmr', 'cek_jantung', 'cek_mental', 'user_profile', 'cek_whtr', 'cek_lemak_tubuh', 'cek_kebutuhan_cairan'];
+        // Whitelist allowed assessment, habits, and health goals tables to prevent SQL injection
+        $allowedTables = [
+            'cek_bmi', 'cek_bmr', 'cek_jantung', 'cek_mental', 'user_profile',
+            'cek_whtr', 'cek_lemak_tubuh', 'cek_kebutuhan_cairan',
+            'cek_tekanan_darah', 'cek_kualitas_tidur', 'cek_zona_detak_jantung', 'cek_aktivitas_fisik', 'cek_stres',
+            'health_habits', 'habit_logs', 'daily_checkins', 'health_reminders', 'notification_logs',
+            'health_goals', 'goal_progress_logs', 'goal_milestones', 'goal_activity_logs'
+        ];
         if (!in_array($table, $allowedTables, true)) {
             http_response_code(400);
             die("400 Bad Request: Entitas data tidak valid.");
